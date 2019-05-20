@@ -50,19 +50,19 @@ fn main() -> std::io::Result<()> {
                 let coords: Vec<_> = coords_part.split(",").collect();
                 commands.push(Command::PlotAbsolute(
                         Point {
-                            x: coords[0].parse().unwrap(),
-                            y: coords[1].parse().unwrap(),
+                            x: coords[0].trim().parse().unwrap(),
+                            y: coords[1].trim().parse().unwrap(),
                         }));
             } else if cmd_type == "PR" {
                 let coords_part = cmd[2..].to_string();
                 let coords: Vec<_> = coords_part.split(",").collect();
                 commands.push(Command::PlotRelative(
                         Point {
-                            x: coords[0].parse().unwrap(),
-                            y: coords[1].parse().unwrap(),
+                            x: coords[0].trim().parse().unwrap(),
+                            y: coords[1].trim().parse().unwrap(),
                         }));
             } else if cmd_type == "SP" {
-                let pen = cmd[2..].to_string().parse().unwrap();
+                let pen = cmd[2..].to_string().trim().parse().unwrap();
                 commands.push(Command::SelectPen(pen));
             }
         }
