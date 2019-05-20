@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::prelude::*;
 
@@ -53,6 +54,16 @@ fn main() -> std::io::Result<()> {
         }
     }
 
+    let mut colors: HashMap<u8, String> = HashMap::new();
+    colors.insert(1, "black".to_string());
+    colors.insert(2, "red".to_string());
+    colors.insert(3, "blue".to_string());
+    colors.insert(4, "green".to_string());
+    colors.insert(5, "yellow".to_string());
+    colors.insert(6, "orange".to_string());
+    colors.insert(7, "brown".to_string());
+    colors.insert(8, "pink".to_string());
+
     let mut color: u8 = 0;
     let mut position: Point = Point { x: 0, y: 0 };
     let mut pen_down: bool = false;
@@ -67,25 +78,27 @@ fn main() -> std::io::Result<()> {
                 pen_down = true;    
             },
             Command::PlotAbsolute(p) => {
-                if pen_down {
+                if pen_down && color != 0 {
                     println!(
-                        "<line x1='{}' y1='{}' x2='{}' y2='{}' style='stroke:rgb(0,0,0);stroke-width:2'/>",
+                        "<line x1='{}' y1='{}' x2='{}' y2='{}' style='stroke:{};stroke-width:2'/>",
                         position.y,
                         position.x,
                         p.y,
-                        p.x
+                        p.x,
+                        colors[&color],
                     );
                 }
                 position = p;
             },
             Command::PlotRelative(p) => {
-                if pen_down {
+                if pen_down && color != 0 {
                     println!(
-                        "<line x1='{}' y1='{}' x2='{}' y2='{}' style='stroke:rgb(0,0,0);stroke-width:2'/>",
+                        "<line x1='{}' y1='{}' x2='{}' y2='{}' style='stroke:{};stroke-width:2'/>",
                         position.y,
                         position.x,
                         position.y + p.y,
-                        position.x + p.x
+                        position.x + p.x,
+                        colors[&color],
                     );
                 }
                 position.x += p.x;
