@@ -41,7 +41,7 @@ fn main() -> Result<(),Error> {
 
     match serialport::open_with_settings(&args[1], &s) {
         Ok(mut port) => {
-			port.write(b"IN;OI;");
+			port.write(b"IN;");
 			for cmd in cmds.iter() {
 				port.write(cmd);
 				println!("{}", String::from_utf8(cmd.to_vec()).unwrap());
