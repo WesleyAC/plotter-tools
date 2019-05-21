@@ -46,7 +46,6 @@ fn main() -> Result<(),Error> {
 				port.write(cmd);
 				println!("{}", String::from_utf8(cmd.to_vec()).unwrap());
 				port.write(b"OA;");
-				std::thread::sleep(Duration::from_millis(20));
 				let mut c = 0;
 				while c != 13 {
 					let mut v = vec![0];
