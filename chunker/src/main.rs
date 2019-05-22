@@ -15,7 +15,7 @@
 extern crate serialport;
 
 use std::fs::File;
-use std::io::{self, Write, BufReader, BufRead, Error};
+use std::io::{Write, BufReader, BufRead, Error};
 use std::time::Duration;
 
 use serialport::prelude::*;
@@ -42,18 +42,26 @@ fn main() -> Result<(),Error> {
     match serialport::open_with_settings(&args[1], &s) {
         Ok(mut port) => {
 			port.write(b"IN;");
+            let mut next_cmd = vec![];
 			for cmd in cmds.iter() {
-				port.write(cmd);
-				println!("{}", String::from_utf8(cmd.to_vec()).unwrap());
-				port.write(b"OA;");
-				let mut c = 0;
-				while c != 13 {
-					let mut v = vec![0];
-					port.read(v.as_mut_slice());
-					c = v[0];
-				}
-                port.clear(ClearBuffer::All);
+                if next_cmd.len() + cmd.len() < 57 {
+                    next_cmd.append(&mut cmd.clone());
+                } else {
+                    port.write(&next_cmd);
+                    println!("{}", String::from_utf8(next_cmd.to_vec()).unwrap());
+                    port.write(b"OA;");
+                    let mut c = 0;
+                    while c != 13 {
+                        let mut v = vec![0];
+                        port.read(v.as_mut_slice());
+                        c = v[0];
+                    }
+                    port.clear(ClearBuffer::All);
+                    next_cmd = cmd.to_vec();
+                }
 			}
+            port.write(&next_cmd);
+            println!("{}", String::from_utf8(next_cmd.to_vec()).unwrap());
         }
         Err(e) => {
             ::std::process::exit(1);
