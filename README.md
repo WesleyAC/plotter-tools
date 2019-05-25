@@ -2,7 +2,7 @@
 
 Some tools for interacting with the HP7440A pen plotter.
 
-# `chunker`
+## `chunker`
 
 `chunker` is used to communicate with the pen plotter.
 
@@ -30,7 +30,7 @@ and replace `/dev/ttyUSB0` with `/dev/tty.usbserial`.
 If you run into mysterious problems, try disconnecting and reconnecting the
 plotter before running the `chunker` command.
 
-# `viz`
+## `viz`
 
 There is also a `viz` command, which makes a html document showing a debug
 visualisation of what the output of a command will look like. It takes a single
@@ -45,7 +45,7 @@ To run it:
 * Run `cargo run ~/path/to/your/hpgl/file > /tmp/some_file.html`
 * Open `file:///tmp/some_file.html` in your web browser
 
-# `convert.py`
+## `convert.py`
 
 `convert.py` converts a HP-GL file that is in only absolute movements to one
 that is in only relative movements. It is very limited - it only works on files
