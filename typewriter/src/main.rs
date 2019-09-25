@@ -94,13 +94,13 @@ fn main() {
             if points.len() == 0 {
                 continue;
             }
-            println!("PU");
-            println!("PA {} {}", points[0].x, points[0].y);
-            println!("PD");
+            println!("PU;");
+            println!("PA {}, {};", points[0].x, points[0].y);
+            println!("PD;");
             for point in points {
-                println!("PA {} {}", point.x, point.y);
+                println!("PA {}, {};", point.x, point.y);
             }
-            println!("PU");
+            println!("PU;");
         }
     }
 }
