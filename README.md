@@ -54,3 +54,10 @@ only use `PA` movement commands with a single position as a parameter. I use
 it, in addition to some vim macros to convert HP-GL files outputted by inkscape
 to ones that can be used at arbitrary points in a script. It's pretty janky
 right now, improvements are appreciated <3
+
+## `typewriter`
+
+`typewriter` generates plotting instructions that render text on the page, for
+any arbitrary `ttf`-compatible font on your computer. Unfortunately, due to
+limitations in `rusttype`, it only supports LTR text for now. The output assumes
+that the correct pen is already selected.
