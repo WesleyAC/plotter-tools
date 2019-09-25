@@ -59,11 +59,11 @@ right now, improvements are appreciated <3
 
 `typewriter` generates plotting instructions that render text on the page, for
 any arbitrary `ttf`-compatible font on your computer. Unfortunately, due to
-limitations in `rusttype`, it only supports LTR text for now. The output assumes
-that the correct pen is already selected. To use `typewriter`:
+limitations in `rusttype`, it only supports LTR text and `ttf` font files for
+now. The output assumes that the correct pen is already selected.
 
 To use `typewriter`:
 
 * Install Rust from [rustup.rs](https://rustup.rs/)
 * `cd` into the `typewriter` directory
-* Run `cargo run ./target/debug/typewriter <x> <y> <font size> "your text here" /path/to/font/file.otf`
+* Run `cargo run ./target/debug/typewriter <x> <y> <font size> "your text here" /path/to/font/file.ttf > yourfile.hgpl`
