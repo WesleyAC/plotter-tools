@@ -28,8 +28,8 @@ fn segment_to_points(segment: Segment) -> Vec<Point> {
         }
         Segment::Curve(curve) => {
             let mut res = vec![];
-            for i in 0..101 {
-                let t = i as f32 * 0.01;
+            for i in 0..11 {
+                let t = i as f32 * 0.1;
                 let x = (1.0 - t) * (1.0 - t) * curve.p[0].x + 2.0 * (1.0 - t) * t * curve.p[1].x + t * t * curve.p[2].x;
                 let y = (1.0 - t) * (1.0 - t) * curve.p[0].y + 2.0 * (1.0 - t) * t * curve.p[1].y + t * t * curve.p[2].y;
                 let point = Point {
@@ -50,6 +50,9 @@ fn countour_to_points(contour: Contour) -> Vec<Point> {
     }
     let mut dedup_res = vec![];
     for item in res {
+        if item.x < 0 || item.x > 10300 || item.y < 0 || item.y > 7650 {
+            eprintln!("WARNING: point {:?} is out of bounds", &item);
+        }
         if Some(&item) != dedup_res.last() {
             dedup_res.push(item);
         }
