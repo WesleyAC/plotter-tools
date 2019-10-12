@@ -54,3 +54,18 @@ only use `PA` movement commands with a single position as a parameter. I use
 it, in addition to some vim macros to convert HP-GL files outputted by inkscape
 to ones that can be used at arbitrary points in a script. It's pretty janky
 right now, improvements are appreciated <3
+
+## `typewriter`
+
+`typewriter` generates plotting instructions that render text on the page, for
+a font on your computer. Unfortunately, due to limitations in `rusttype`, it
+only supports LTR text and `ttf` font files for now. The output assumes that
+the correct pen is already selected. You may also want to set the velocity so
+that straight lines and curves are plotted with the same darkness — `VS 2;`
+seems to work well.
+
+To use `typewriter`:
+
+* Install Rust from [rustup.rs](https://rustup.rs/)
+* `cd` into the `typewriter` directory
+* Run `cargo run ./target/debug/typewriter <x> <y> <font size> "your text here" /path/to/font/file.ttf > yourfile.hgpl`
