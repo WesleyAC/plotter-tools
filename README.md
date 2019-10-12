@@ -35,8 +35,8 @@ plotter before running the `chunker` command.
 There is also a `viz` command, which makes a html document showing a debug
 visualisation of what the output of a command will look like. It takes a single
 input file argument, and outputs a html document to stdout. Currently, it only
-supports the `PU`, `PD`, `PA`, `PR`, and `SP` commands. For commands that can
-take a list of points, only the one-point versions are supported.
+supports the `PU`, `PD`, `PA`, `PR`, and `SP` commands. The `IN` command is
+treated as a nop.
 
 To run it:
 

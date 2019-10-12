@@ -12,21 +12,68 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::collections::HashMap;
 use std::fs::File;
 use std::io::prelude::*;
 
+#[derive(Copy, Clone, Debug)]
 struct Point {
     x: i32,
     y: i32,
 }
 
+#[derive(Debug)]
 enum Command {
-    PenUp,
-    PenDown,
-    PlotAbsolute(Point),
-    PlotRelative(Point),
+    PenUp(Vec<Point>),
+    PenDown(Vec<Point>),
+    PlotAbsolute(Vec<Point>),
+    PlotRelative(Vec<Point>),
     SelectPen(u8),
+    Initalize,
+}
+
+fn parse_command(cmd: String) -> Command {
+    let cmd_type: String = cmd[0..2].to_string();
+    let mut points: Vec<Point> = vec![];
+    if cmd.len() > 2 && cmd_type != "SP" {
+        let coords_part: String = cmd[2..].to_string();
+        let coords: Vec<_> = coords_part.split(",").collect();
+        if coords.len() % 2 != 0 {
+            panic!("Odd number of points given to command!");
+        }
+        for i in 0..coords.len()/2 {
+            points.push(Point {
+                x: coords[i*2].trim().parse().unwrap(),
+                y: coords[i*2+1].trim().parse().unwrap(),
+            });
+        }
+    }
+    if cmd_type == "PU" {
+        Command::PenUp(points)
+    } else if cmd_type == "PD" {
+        Command::PenDown(points)
+    } else if cmd_type == "PA" {
+        Command::PlotAbsolute(points)
+    } else if cmd_type == "PR" {
+        Command::PlotRelative(points)
+    } else if cmd_type == "SP" {
+        let pen = cmd[2..].to_string().trim().parse().unwrap();
+        Command::SelectPen(pen)
+    } else if cmd_type == "IN" {
+        Command::Initalize
+    } else {
+        panic!("unknown command")
+    }
+}
+
+fn draw_line(start: Point, end: Point, color: u8) {
+    println!(
+        "<line x1='{}' y1='{}' x2='{}' y2='{}' style='stroke:{};stroke-width:2'/>",
+        start.x,
+        start.y,
+        end.x,
+        end.y,
+        &["black", "red", "blue", "green", "yellow", "orange", "brown", "pink"][color as usize],
+    );
 }
 
 fn main() -> std::io::Result<()> {
@@ -40,43 +87,9 @@ fn main() -> std::io::Result<()> {
     for mut cmd in contents.split(";") {
         cmd = cmd.trim();
         if cmd.len() >= 2 {
-            let cmd_type: String = cmd.trim()[0..2].to_string();
-            if cmd_type == "PU" {
-                commands.push(Command::PenUp);
-            } else if cmd_type == "PD" {
-                commands.push(Command::PenDown);
-            } else if cmd_type == "PA" {
-                let coords_part = cmd[2..].to_string();
-                let coords: Vec<_> = coords_part.split(",").collect();
-                commands.push(Command::PlotAbsolute(
-                        Point {
-                            x: coords[0].trim().parse().unwrap(),
-                            y: coords[1].trim().parse().unwrap(),
-                        }));
-            } else if cmd_type == "PR" {
-                let coords_part = cmd[2..].to_string();
-                let coords: Vec<_> = coords_part.split(",").collect();
-                commands.push(Command::PlotRelative(
-                        Point {
-                            x: coords[0].trim().parse().unwrap(),
-                            y: coords[1].trim().parse().unwrap(),
-                        }));
-            } else if cmd_type == "SP" {
-                let pen = cmd[2..].to_string().trim().parse().unwrap();
-                commands.push(Command::SelectPen(pen));
-            }
+            commands.push(parse_command(cmd.to_string()));
         }
     }
-
-    let mut colors: HashMap<u8, String> = HashMap::new();
-    colors.insert(1, "black".to_string());
-    colors.insert(2, "red".to_string());
-    colors.insert(3, "blue".to_string());
-    colors.insert(4, "green".to_string());
-    colors.insert(5, "yellow".to_string());
-    colors.insert(6, "orange".to_string());
-    colors.insert(7, "brown".to_string());
-    colors.insert(8, "pink".to_string());
 
     let mut color: u8 = 0;
     let mut position: Point = Point { x: 0, y: 0 };
@@ -85,42 +98,41 @@ fn main() -> std::io::Result<()> {
     println!("<html><body><svg viewBox='0 0 7650 10300'>");
     for cmd in commands {
         match cmd {
-            Command::PenUp => {
+            Command::PenUp(points) => {
                 pen_down = false;
+                position = *points.last().unwrap_or(&position);
             },
-            Command::PenDown => {
-                pen_down = true;    
-            },
-            Command::PlotAbsolute(p) => {
-                if pen_down && color != 0 {
-                    println!(
-                        "<line x1='{}' y1='{}' x2='{}' y2='{}' style='stroke:{};stroke-width:2'/>",
-                        position.y,
-                        position.x,
-                        p.y,
-                        p.x,
-                        colors[&color],
-                    );
+            Command::PenDown(points) => {
+                for p in points {
+                    if pen_down && color != 0 {
+                        draw_line(position, p, color.clone());
+                    }
+                    position = p;
+                    pen_down = true;
                 }
-                position = p;
+                pen_down = true;
             },
-            Command::PlotRelative(p) => {
-                if pen_down && color != 0 {
-                    println!(
-                        "<line x1='{}' y1='{}' x2='{}' y2='{}' style='stroke:{};stroke-width:2'/>",
-                        position.y,
-                        position.x,
-                        position.y + p.y,
-                        position.x + p.x,
-                        colors[&color],
-                    );
+            Command::PlotAbsolute(points) => {
+                for p in points {
+                    if pen_down && color != 0 {
+                        draw_line(position, p, color.clone());
+                    }
+                    position = p;
                 }
-                position.x += p.x;
-                position.y += p.y;
+            },
+            Command::PlotRelative(points) => {
+                for p in points {
+                    if pen_down && color != 0 {
+                        draw_line(position, p, color.clone());
+                    }
+                    position.x += p.x;
+                    position.y += p.y;
+                }
             },
             Command::SelectPen(c) => {
                 color = c;
             }
+            Command::Initalize => {}
         }
     }
     println!("</svg></body></html>");
