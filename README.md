@@ -42,7 +42,7 @@ To run it:
 
 * Install Rust from [rustup.rs](https://rustup.rs/)
 * `cd` into the `viz` directory
-* Run `cargo run ~/path/to/your/hpgl/file > /tmp/some_file.html`
+* Run `cargo run -- ~/path/to/your/file.hpgl > /tmp/some_file.html`
 * Open `file:///tmp/some_file.html` in your web browser
 
 ## `convert.py`
