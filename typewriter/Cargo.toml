@@ -3,6 +3,7 @@ name = "typewriter"
 version = "0.1.0"
 authors = ["Robert Lord <robert@lord.io>"]
 edition = "2018"
+license = "MIT"
 
 [dependencies]
 rusttype = "0.8.0"
