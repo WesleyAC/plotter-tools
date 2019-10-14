@@ -1,6 +1,11 @@
 # plotter-tools
 
-Some tools for interacting with the HP7440A pen plotter.
+Some tools for interacting with pen plotters that use HPGL (or G-Code, in a [strange case](https://trmm.net/Plotter)).
+
+## Getting Started
+
+Before using any of these, you'll need to install the Rust toolchain - you can
+do that by following the instructions at [rustup.rs](https://rustup.rs).
 
 ## `chunker`
 
@@ -15,7 +20,6 @@ file, initializing the plotter.
 
 To use `chunker`:
 
-* Install Rust from [rustup.rs](https://rustup.rs/)
 * `cd` into the `chunker` directory
 * Run `cargo build`
 * You many need to install `libudev-dev` or a similar package if it fails to
@@ -40,7 +44,6 @@ treated as a nop.
 
 To run it:
 
-* Install Rust from [rustup.rs](https://rustup.rs/)
 * `cd` into the `viz` directory
 * Run `cargo run -- ~/path/to/your/file.hpgl > /tmp/some_file.html`
 * Open `file:///tmp/some_file.html` in your web browser
@@ -66,7 +69,6 @@ seems to work well.
 
 To use `typewriter`:
 
-* Install Rust from [rustup.rs](https://rustup.rs/)
 * `cd` into the `typewriter` directory
 * Run `cargo run ./target/debug/typewriter <x> <y> <font size> "your text here" /path/to/font/file.ttf > yourfile.hgpl`
 
@@ -75,7 +77,6 @@ To use `typewriter`:
 `hpgl2gcode` converts HPGL programs to G-Code programs that can be plotted on
 the [plotter at NYC Resistor](https://trmm.net/Plotter). To use it:
 
-* Install Rust from [rustup.rs](https://rustup.rs/)
 * `cd` into the `hpgl2gcode` directory
 * Run `cargo run -- ~/path/to/your/file.hpgl > ~/path/to/your/file.gcode`
 * You can then use [ReplicatorG](http://replicat.org/) to send the gcode file to the plotter.
