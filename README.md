@@ -69,3 +69,13 @@ To use `typewriter`:
 * Install Rust from [rustup.rs](https://rustup.rs/)
 * `cd` into the `typewriter` directory
 * Run `cargo run ./target/debug/typewriter <x> <y> <font size> "your text here" /path/to/font/file.ttf > yourfile.hgpl`
+
+## `hpgl2gcode`
+
+`hpgl2gcode` converts HPGL programs to G-Code programs that can be plotted on
+the [plotter at NYC Resistor](https://trmm.net/Plotter). To use it:
+
+* Install Rust from [rustup.rs](https://rustup.rs/)
+* `cd` into the `hpgl2gcode` directory
+* Run `cargo run -- ~/path/to/your/file.hpgl > ~/path/to/your/file.gcode`
+* You can then use [ReplicatorG](http://replicat.org/) to send the gcode file to the plotter.

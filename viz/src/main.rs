@@ -31,6 +31,7 @@ enum Command {
     Initalize,
 }
 
+// TODO: If you edit this, split it into a separate mod and share between viz and hpgl2gcode
 fn parse_command(cmd: String) -> Command {
     let cmd_type: String = cmd[0..2].to_string();
     let mut points: Vec<Point> = vec![];
