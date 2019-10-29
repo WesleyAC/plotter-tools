@@ -72,9 +72,9 @@ fn parse_command(cmd: String) -> Command {
     }
 }
 
-fn plot_points(points: Vec<Point>) {
+fn plot_points(points: Vec<Point>, xscale: f64, yscale: f64) {
     for point in points {
-        println!("G1 X{} Y{}", point.x, point.y);
+        println!("G1 X{} Y{}", (point.x as f64) * xscale, (point.y as f64) * yscale);
     }
 }
 
@@ -84,6 +84,10 @@ fn main() -> std::io::Result<()> {
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
 
+    // scale of 0.076 is good for Recurse Center plotter -> NYCR plotter conversion
+    let xscale = 0.076;
+    let yscale = 0.076;
+
     for mut hpgl_cmd in contents.split(";") {
         hpgl_cmd = hpgl_cmd.trim();
         if hpgl_cmd.len() >= 2 {
@@ -92,21 +96,21 @@ fn main() -> std::io::Result<()> {
                     println!("G90");
                     println!("M107");
                     println!("G4 P100");
-                    plot_points(points);
+                    plot_points(points, xscale, yscale);
                 }
                 Command::PenDown(points) => {
                     println!("G90");
                     println!("M106");
                     println!("G4 P100");
-                    plot_points(points);
+                    plot_points(points, xscale, yscale);
                 }
                 Command::PlotAbsolute(points) => {
                     println!("G90");
-                    plot_points(points);
+                    plot_points(points, xscale, yscale);
                 }
                 Command::PlotRelative(points) => {
                     println!("G91");
-                    plot_points(points);
+                    plot_points(points, xscale, yscale);
                 }
                 Command::SelectPen(_) => {}
                 Command::Initalize => {}
