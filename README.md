@@ -80,3 +80,8 @@ the [plotter at NYC Resistor](https://trmm.net/Plotter). To use it:
 * `cd` into the `hpgl2gcode` directory
 * Run `cargo run -- ~/path/to/your/file.hpgl > ~/path/to/your/file.gcode`
 * You can then use [ReplicatorG](http://replicat.org/) to send the gcode file to the plotter.
+
+It applies a scale factor to both axes as well - currently, it is not configurable without changing
+the source, but pull requests are welcome :) The HPGL -> Gcode step is the correct step to apply
+the scale factor at, since HPGL is integer-only, and thus suffers from more rounding problems than
+Gcode.
