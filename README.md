@@ -15,7 +15,7 @@ It gets around the plotters 60 byte buffer, by taking in a file of HP-GL
 commands, and sending each one to the plotter punctuated by a `OA` command,
 then waiting to send the next command to the plotter until a response has been
 received. This allows sending large files to the plotter without overflowing
-the internal buffer. The `chunker` command also prepends `IN;OI;` to the entire
+the internal buffer. The `chunker` command also prepends `IN;` to the entire
 file, initializing the plotter.
 
 To use `chunker`:
@@ -81,10 +81,10 @@ the [plotter at NYC Resistor](https://trmm.net/Plotter). To use it:
 * Run `cargo run -- ~/path/to/your/file.hpgl > ~/path/to/your/file.gcode`
 * You can then use [ReplicatorG](http://replicat.org/) to send the gcode file to the plotter.
 
-It applies a scale factor to both axes as well - currently, it is not configurable without changing
-the source, but pull requests are welcome :) The HPGL -> Gcode step is the correct step to apply
-the scale factor at, since HPGL is integer-only, and thus suffers from more rounding problems than
-Gcode.
+It applies a scale factor to both axes as well - currently, it is not
+configurable without changing the source, but pull requests are welcome :) The
+HPGL -> Gcode step is the correct step to apply the scale factor at, since HPGL
+is integer-only, and thus suffers from more rounding problems than Gcode.
 
 ## `adapter`
 
@@ -104,4 +104,4 @@ well, but I haven't tried it.
 
 The OpenSCAD adapter is designed to allow for the use of 3 M4 fine-pitch set
 screws - for instance, [McMaster-Carr part #90751A115](https://www.mcmaster.com/90751a115)
-should work well, although, this entire design is untested :)
+should work well, although this entire design is untested :)
