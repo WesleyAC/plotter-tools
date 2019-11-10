@@ -69,10 +69,11 @@ fn parse_command(cmd: String) -> Command {
 fn draw_line(start: Point, end: Point, color: u8) {
     println!(
         "<line x1='{}' y1='{}' x2='{}' y2='{}' style='stroke:{};stroke-width:2'/>",
-        start.x,
+        // not sure why these have to be swapped - definitely a bug here :(
         start.y,
-        end.x,
+        start.x,
         end.y,
+        end.x,
         &["black", "red", "blue", "green", "yellow", "orange", "brown", "pink"][color as usize],
     );
 }
