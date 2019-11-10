@@ -101,3 +101,7 @@ Jean-Philippe [mentions](https://www.tinkercad.com/things/kDwyCi3l2R6) that
 using a SLS machine with PA12 nylon seems to work well. I think that it's
 unlikely that a typical hobbyist FDM machine would be accurate enough to work
 well, but I haven't tried it.
+
+The OpenSCAD adapter is designed to allow for the use of 3 M4 fine-pitch set
+screws - for instance, [McMaster-Carr part #90751A115](https://www.mcmaster.com/90751a115)
+should work well, although, this entire design is untested :)
