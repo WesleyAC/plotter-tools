@@ -85,3 +85,19 @@ It applies a scale factor to both axes as well - currently, it is not configurab
 the source, but pull requests are welcome :) The HPGL -> Gcode step is the correct step to apply
 the scale factor at, since HPGL is integer-only, and thus suffers from more rounding problems than
 Gcode.
+
+## `adapter`
+
+The `adapter` directory contains some OpenSCAD code to generate a 3d model of an
+adapter that allows for the use of pens other than the vintage HP plotter pens.
+It's based on [Jean-Philippe Côté's model](https://www.thingiverse.com/thing:2955469).
+
+In order to make holders for new pens, you'll need to install OpenSCAD, open
+`adapter.scad`, and add a new module for the pen you want to add. If you make
+one that works, pleas submit a PR! I'm very excited to try new pens :)
+
+We've found that SLA machines have good enough resolution to print these, and
+Jean-Philippe [mentions](https://www.tinkercad.com/things/kDwyCi3l2R6) that
+using a SLS machine with PA12 nylon seems to work well. I think that it's
+unlikely that a typical hobbyist FDM machine would be accurate enough to work
+well, but I haven't tried it.
