@@ -70,7 +70,7 @@ seems to work well.
 To use `typewriter`:
 
 * `cd` into the `typewriter` directory
-* Run `cargo run ./target/debug/typewriter <x> <y> <font size> "your text here" /path/to/font/file.ttf > yourfile.hgpl`
+* Run `cargo run -- <x> <y> <font size> "your text here" /path/to/font/file.ttf > yourfile.hgpl`
 
 ## `hpgl2gcode`
 
