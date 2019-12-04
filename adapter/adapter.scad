@@ -14,16 +14,18 @@ module adapter() {
 module label(name) {
     rotate([180,0,0])
     translate([0,0,-4])
-    writecylinder(name, radius=6, h=3.25);
+    writecylinder(name, radius=5.6, h=3.5);
 }
 
 // untested
 module faber_castell_pitt_pen() {
-    translate([0,0,-1]) cylinder(32, d1=9.1, d2=8.7, $fs=0.1);
-    label("FABER-CASTELL");
+    union() {
+        difference() {
+            adapter();
+            translate([0,0,-1]) cylinder(32, d1=9.1, d2=8.7, $fs=0.1);
+        }
+        label("FABER-CASTELL");
+    }
 }
 
-difference() {
-    adapter();
-    faber_castell_pitt_pen();
-}
+faber_castell_pitt_pen();
