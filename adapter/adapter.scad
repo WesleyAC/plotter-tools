@@ -22,7 +22,7 @@ module faber_castell_pitt_pen() {
     union() {
         difference() {
             adapter();
-            translate([0,0,-1]) cylinder(32, d1=9.1, d2=8.7, $fs=0.1);
+            translate([0,0,-1]) cylinder(32, d1=9.02, d2=8.55, $fs=0.1);
         }
         label("FABER-CASTELL");
     }
