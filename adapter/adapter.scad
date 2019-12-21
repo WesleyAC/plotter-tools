@@ -22,10 +22,22 @@ module faber_castell_pitt_pen() {
     union() {
         difference() {
             adapter();
-            translate([0,0,-1]) cylinder(32, d1=9.02, d2=8.55, $fs=0.1);
+            translate([0,0,-1]) cylinder(32, d1=9, d2=8.5, $fs=0.1);
         }
         label("FABER-CASTELL");
     }
 }
 
 faber_castell_pitt_pen();
+// translate([14, 0, 30]) rotate([0, 180, 0]) faber_castell_pitt_pen();
+// translate([14, 14, 0]) faber_castell_pitt_pen();
+// translate([0, 14, 30]) rotate([0, 180, 0]) faber_castell_pitt_pen();
+// rotate([90, 0, 0]) translate([0, 1, -9]) cylinder(4, d=1.5);
+// rotate([0, 90, 0]) translate([-1, 0, 5]) cylinder(4, d=1.5);
+// rotate([90, 0, 0]) translate([13.5, 1, -9]) cylinder(4, d=1.5);
+// rotate([0, 90, 0]) translate([-1, 14, 5]) cylinder(4, d=1.5);
+// rotate([90, 0, 0]) translate([0, 29, -9]) cylinder(4, d=1.5);
+// rotate([0, 90, 0]) translate([-29, 0, 5]) cylinder(4, d=1.5);
+// rotate([90, 0, 0]) translate([13.5, 29, -9]) cylinder(4, d=1.5);
+// rotate([0, 90, 0]) translate([-29, 14, 5]) cylinder(4, d=1.5);
+
