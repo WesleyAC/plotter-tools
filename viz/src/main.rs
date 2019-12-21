@@ -124,11 +124,12 @@ fn main() -> std::io::Result<()> {
             },
             Command::PlotRelative(points) => {
                 for p in points {
-                    if pen_down && color != 0 {
-                        draw_line(position, p, color.clone());
-                    }
+                    let old_pos = position;
                     position.x += p.x;
                     position.y += p.y;
+                    if pen_down && color != 0 {
+                        draw_line(old_pos, position, color.clone());
+                    }
                 }
             },
             Command::SelectPen(c) => {
