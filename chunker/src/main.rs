@@ -16,9 +16,21 @@ extern crate serialport;
 
 use std::fs::File;
 use std::io::{Write, BufReader, BufRead, Error};
+use std::path::PathBuf;
 use std::time::Duration;
 
 use serialport::prelude::*;
+
+use structopt::StructOpt;
+
+#[derive(Debug, StructOpt)]
+#[structopt(rename_all = "kebab-case")]
+struct Args {
+    serial_port_file: PathBuf,
+    hpgl_file: PathBuf,
+    #[structopt(short="b", default_value="57")]
+    buffer_size: usize,
+}
 
 fn main() -> Result<(),Error> {
 	let s = SerialPortSettings {
@@ -30,21 +42,21 @@ fn main() -> Result<(),Error> {
 		timeout: Duration::from_millis(1000),
 	};
 
-	let args: Vec<_> = std::env::args().collect();
+	let args = Args::from_args();
 
-	let input = File::open(&args[2])?;
+	let input = File::open(args.hpgl_file)?;
 	let buffered = BufReader::new(input);
 	let mut cmds: Vec<Vec<u8>> = vec![];
 	for cmd in buffered.lines() {
         cmds.push(cmd?.as_bytes().to_vec());
 	}
 
-    match serialport::open_with_settings(&args[1], &s) {
+    match serialport::open_with_settings(&args.serial_port_file, &s) {
         Ok(mut port) => {
 			port.write(b"IN;");
             let mut next_cmd = vec![];
 			for cmd in cmds.iter() {
-                if next_cmd.len() + cmd.len() < 57 {
+                if next_cmd.len() + cmd.len() < args.buffer_size {
                     next_cmd.append(&mut cmd.clone());
                 } else {
                     port.write(&next_cmd);
