@@ -3,11 +3,3 @@
 [[package]]
 name = "hpgl"
 version = "0.1.0"
-
-[[package]]
-name = "hpgl2gcode"
-version = "0.1.0"
-dependencies = [
- "hpgl 0.1.0",
-]
-

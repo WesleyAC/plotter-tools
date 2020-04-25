@@ -1,4 +1,5 @@
 chunker/target/
 viz/target/
 typewriter/target/
-hpgl2gcode/target
+hpgl2gcode/target/
+hpgl/target/

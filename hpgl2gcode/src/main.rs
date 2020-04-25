@@ -20,57 +20,8 @@
 
 use std::fs::File;
 use std::io::prelude::*;
+use hpgl::{Point, Command, parse_commands};
 
-#[derive(Copy, Clone, Debug)]
-struct Point {
-    x: i32,
-    y: i32,
-}
-
-#[derive(Debug)]
-enum Command {
-    PenUp(Vec<Point>),
-    PenDown(Vec<Point>),
-    PlotAbsolute(Vec<Point>),
-    PlotRelative(Vec<Point>),
-    SelectPen(u8),
-    Initalize,
-}
-
-// TODO: If you edit this, split it into a separate mod and share between viz and hpgl2gcode
-fn parse_command(cmd: String) -> Command {
-    let cmd_type: String = cmd[0..2].to_string();
-    let mut points: Vec<Point> = vec![];
-    if cmd.len() > 2 && cmd_type != "SP" {
-        let coords_part: String = cmd[2..].to_string();
-        let coords: Vec<_> = coords_part.split(",").collect();
-        if coords.len() % 2 != 0 {
-            panic!("Odd number of points given to command!");
-        }
-        for i in 0..coords.len()/2 {
-            points.push(Point {
-                x: coords[i*2].trim().parse().unwrap(),
-                y: coords[i*2+1].trim().parse().unwrap(),
-            });
-        }
-    }
-    if cmd_type == "PU" {
-        Command::PenUp(points)
-    } else if cmd_type == "PD" {
-        Command::PenDown(points)
-    } else if cmd_type == "PA" {
-        Command::PlotAbsolute(points)
-    } else if cmd_type == "PR" {
-        Command::PlotRelative(points)
-    } else if cmd_type == "SP" {
-        let pen = cmd[2..].to_string().trim().parse().unwrap();
-        Command::SelectPen(pen)
-    } else if cmd_type == "IN" {
-        Command::Initalize
-    } else {
-        panic!("unknown command")
-    }
-}
 
 fn plot_points(points: Vec<Point>, xscale: f64, yscale: f64) {
     for point in points {
@@ -83,38 +34,37 @@ fn main() -> std::io::Result<()> {
     let mut file = File::open(args[1].clone())?;
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
+    let cmds = parse_commands(contents).unwrap();
 
     // scale of 0.076 is good for Recurse Center plotter -> NYCR plotter conversion
     let xscale = 0.076;
     let yscale = 0.076;
 
-    for mut hpgl_cmd in contents.split(";") {
-        hpgl_cmd = hpgl_cmd.trim();
-        if hpgl_cmd.len() >= 2 {
-            match parse_command(hpgl_cmd.to_string()) {
-                Command::PenUp(points) => {
-                    println!("G90");
-                    println!("M107");
-                    println!("G4 P100");
-                    plot_points(points, xscale, yscale);
-                }
-                Command::PenDown(points) => {
-                    println!("G90");
-                    println!("M106");
-                    println!("G4 P100");
-                    plot_points(points, xscale, yscale);
-                }
-                Command::PlotAbsolute(points) => {
-                    println!("G90");
-                    plot_points(points, xscale, yscale);
-                }
-                Command::PlotRelative(points) => {
-                    println!("G91");
-                    plot_points(points, xscale, yscale);
-                }
-                Command::SelectPen(_) => {}
-                Command::Initalize => {}
+
+    for cmd in cmds {
+        match cmd {
+            Command::PenUp(points) => {
+                println!("G90");
+                println!("M107");
+                println!("G4 P100");
+                plot_points(points, xscale, yscale);
             }
+            Command::PenDown(points) => {
+                println!("G90");
+                println!("M106");
+                println!("G4 P100");
+                plot_points(points, xscale, yscale);
+            }
+            Command::PlotAbsolute(points) => {
+                println!("G90");
+                plot_points(points, xscale, yscale);
+            }
+            Command::PlotRelative(points) => {
+                println!("G91");
+                plot_points(points, xscale, yscale);
+            }
+            Command::SelectPen(_) => {}
+            Command::Initalize => {}
         }
     }
     Ok(())
