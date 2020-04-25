@@ -15,23 +15,28 @@ pub enum Command {
 }
 
 pub fn parse_commands(cmd_str: String) -> Result<Vec<Command>, Vec<String>> {
-    let cmds = cmd_str.split(";").map(|cmd| cmd.trim()).filter(|cmd| cmd.len() != 0); 
+    let cmds = cmd_str
+        .split(";")
+        .map(|cmd| cmd.trim())
+        .filter(|cmd| cmd.len() != 0);
     let maybe_parsed_cmds = cmds.map(|cmd| parse_command(cmd.to_string()));
-    let any_failures = maybe_parsed_cmds.clone().fold(false, |flag, curr| flag || curr.is_err());
+    let any_failures = maybe_parsed_cmds
+        .clone()
+        .fold(false, |flag, curr| flag || curr.is_err());
     if any_failures {
-        Err(maybe_parsed_cmds.filter_map(|cmd| {
-            match cmd {
+        Err(maybe_parsed_cmds
+            .filter_map(|cmd| match cmd {
                 Ok(_) => None,
                 Err(e) => Some(e),
-            }
-        }).collect())
+            })
+            .collect())
     } else {
-        Ok(maybe_parsed_cmds.filter_map(|cmd| {
-            match cmd {
+        Ok(maybe_parsed_cmds
+            .filter_map(|cmd| match cmd {
                 Ok(c) => Some(c),
                 Err(_) => None,
-            }
-        }).collect())
+            })
+            .collect())
     }
 }
 
@@ -46,18 +51,24 @@ mod test {
             None => assert_eq!(parsed, Err(cmd.to_string())),
         }
     }
-    
+
     #[test]
-    fn test_parse_multiple_commands(){
-        assert_eq!(parse_commands("  PU  ; PD  ; ".to_string()), Ok(vec![Command::PenUp(vec![]), Command::PenDown(vec![]) ]));
+    fn test_parse_multiple_commands() {
+        assert_eq!(
+            parse_commands("  PU  ; PD  ; ".to_string()),
+            Ok(vec![Command::PenUp(vec![]), Command::PenDown(vec![])])
+        );
         assert_eq!(parse_commands("".to_string()), Ok(vec![]));
         assert_eq!(parse_commands("\n".to_string()), Ok(vec![]));
         assert_eq!(parse_commands("  ".to_string()), Ok(vec![]));
-        assert_eq!(parse_commands("  PU  ; command_not_valid ; PD  ; ".to_string()), Err(vec!["command_not_valid".to_string()]));
+        assert_eq!(
+            parse_commands("  PU  ; command_not_valid ; PD  ; ".to_string()),
+            Err(vec!["command_not_valid".to_string()])
+        );
     }
 
     #[test]
-    fn test_parser(){
+    fn test_parser() {
         check_parse_command("", None);
         check_parse_command("a", None);
         check_parse_command("command_not_valid", None);
@@ -70,7 +81,9 @@ mod test {
 }
 
 fn parse_command(cmd: String) -> Result<Command, String> {
-    if cmd.len() < 2 { return Err(cmd); }
+    if cmd.len() < 2 {
+        return Err(cmd);
+    }
     let cmd_type: String = cmd[0..2].to_string();
     let mut points: Vec<Point> = vec![];
     if cmd.len() > 2 && cmd_type != "SP" {
@@ -79,10 +92,10 @@ fn parse_command(cmd: String) -> Result<Command, String> {
         if coords.len() % 2 != 0 {
             return Err(cmd);
         }
-        for i in 0..coords.len()/2 {
+        for i in 0..coords.len() / 2 {
             points.push(Point {
-                x: coords[i*2].trim().parse().map_err(|_| cmd.clone())?,
-                y: coords[i*2+1].trim().parse().map_err(|_| cmd.clone())?,
+                x: coords[i * 2].trim().parse().map_err(|_| cmd.clone())?,
+                y: coords[i * 2 + 1].trim().parse().map_err(|_| cmd.clone())?,
             });
         }
     }

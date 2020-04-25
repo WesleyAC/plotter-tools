@@ -15,7 +15,7 @@
 extern crate serialport;
 
 use std::fs::File;
-use std::io::{Write, BufReader, BufRead, Error};
+use std::io::{BufRead, BufReader, Error, Write};
 use std::path::PathBuf;
 use std::time::Duration;
 
@@ -28,34 +28,34 @@ use structopt::StructOpt;
 struct Args {
     serial_port_file: PathBuf,
     hpgl_file: PathBuf,
-    #[structopt(short="b", default_value="57")]
+    #[structopt(short = "b", default_value = "57")]
     buffer_size: usize,
 }
 
-fn main() -> Result<(),Error> {
-	let s = SerialPortSettings {
-		baud_rate: 9600,
-		data_bits: DataBits::Eight,
-		flow_control: FlowControl::None,
-		parity: Parity::None,
-		stop_bits: StopBits::One,
-		timeout: Duration::from_millis(1000),
-	};
+fn main() -> Result<(), Error> {
+    let s = SerialPortSettings {
+        baud_rate: 9600,
+        data_bits: DataBits::Eight,
+        flow_control: FlowControl::None,
+        parity: Parity::None,
+        stop_bits: StopBits::One,
+        timeout: Duration::from_millis(1000),
+    };
 
-	let args = Args::from_args();
+    let args = Args::from_args();
 
-	let input = File::open(args.hpgl_file)?;
-	let buffered = BufReader::new(input);
-	let mut cmds: Vec<Vec<u8>> = vec![];
-	for cmd in buffered.lines() {
+    let input = File::open(args.hpgl_file)?;
+    let buffered = BufReader::new(input);
+    let mut cmds: Vec<Vec<u8>> = vec![];
+    for cmd in buffered.lines() {
         cmds.push(cmd?.as_bytes().to_vec());
-	}
+    }
 
     match serialport::open_with_settings(&args.serial_port_file, &s) {
         Ok(mut port) => {
-			port.write(b"IN;");
+            port.write(b"IN;");
             let mut next_cmd = vec![];
-			for cmd in cmds.iter() {
+            for cmd in cmds.iter() {
                 if next_cmd.len() + cmd.len() < args.buffer_size {
                     next_cmd.append(&mut cmd.clone());
                 } else {
@@ -71,7 +71,7 @@ fn main() -> Result<(),Error> {
                     port.clear(ClearBuffer::All);
                     next_cmd = cmd.to_vec();
                 }
-			}
+            }
             port.write(&next_cmd);
             println!("{}", String::from_utf8(next_cmd.to_vec()).unwrap());
         }
@@ -80,5 +80,5 @@ fn main() -> Result<(),Error> {
         }
     };
 
-	Ok(())
+    Ok(())
 }

@@ -18,14 +18,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+use hpgl::{parse_commands, Command, Point};
 use std::fs::File;
 use std::io::prelude::*;
-use hpgl::{Point, Command, parse_commands};
-
 
 fn plot_points(points: Vec<Point>, xscale: f64, yscale: f64) {
     for point in points {
-        println!("G1 X{} Y{}", (point.x as f64) * xscale, (point.y as f64) * yscale);
+        println!(
+            "G1 X{} Y{}",
+            (point.x as f64) * xscale,
+            (point.y as f64) * yscale
+        );
     }
 }
 
@@ -39,7 +42,6 @@ fn main() -> std::io::Result<()> {
     // scale of 0.076 is good for Recurse Center plotter -> NYCR plotter conversion
     let xscale = 0.076;
     let yscale = 0.076;
-
 
     for cmd in cmds {
         match cmd {

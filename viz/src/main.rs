@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use hpgl::{parse_commands, Command, Point};
 use std::fs::File;
 use std::io::prelude::*;
-use hpgl::{Point, Command, parse_commands};
 
 fn draw_line(start: Point, end: Point, color: u8) {
     println!(
@@ -46,7 +46,7 @@ fn main() -> std::io::Result<()> {
             Command::PenUp(points) => {
                 pen_down = false;
                 position = *points.last().unwrap_or(&position);
-            },
+            }
             Command::PenDown(points) => {
                 for p in points {
                     if pen_down && color != 0 {
@@ -56,7 +56,7 @@ fn main() -> std::io::Result<()> {
                     pen_down = true;
                 }
                 pen_down = true;
-            },
+            }
             Command::PlotAbsolute(points) => {
                 for p in points {
                     if pen_down && color != 0 {
@@ -64,7 +64,7 @@ fn main() -> std::io::Result<()> {
                     }
                     position = p;
                 }
-            },
+            }
             Command::PlotRelative(points) => {
                 for p in points {
                     let old_pos = position;
@@ -74,7 +74,7 @@ fn main() -> std::io::Result<()> {
                         draw_line(old_pos, position, color.clone());
                     }
                 }
-            },
+            }
             Command::SelectPen(c) => {
                 color = c;
             }

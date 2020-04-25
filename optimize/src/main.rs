@@ -1,5 +1,5 @@
 #![feature(or_patterns)]
-use hpgl::{Point, Command, parse_commands};
+use hpgl::{parse_commands, Command, Point};
 
 // possible optimizations:
 // * remove duplicate PU and PD commands
@@ -16,8 +16,12 @@ fn remove_duplicate_pen_commands(cmds: Vec<Command>) -> Vec<Command> {
     for cmd in cmds.iter() {
         match (previous, cmd) {
             (None, cmd) => previous = Some(cmd.clone()),
-            (Some(Command::PenUp(_)) | Some(Command::PenDown(_)), Command::PenUp(pu)) => previous = Some(Command::PenUp(pu.to_vec())),
-            (Some(Command::PenUp(_)) | Some(Command::PenDown(_)), Command::PenDown(pd)) => previous = Some(Command::PenDown(pd.to_vec())),
+            (Some(Command::PenUp(_)) | Some(Command::PenDown(_)), Command::PenUp(pu)) => {
+                previous = Some(Command::PenUp(pu.to_vec()))
+            }
+            (Some(Command::PenUp(_)) | Some(Command::PenDown(_)), Command::PenDown(pd)) => {
+                previous = Some(Command::PenDown(pd.to_vec()))
+            }
             (Some(prev), new) => {
                 out.push(prev);
                 previous = Some(new.clone());
