@@ -15,6 +15,9 @@
 use hpgl::{parse_commands, Command, Point};
 use std::fs::File;
 use std::io::prelude::*;
+use std::path::PathBuf;
+
+use structopt::StructOpt;
 
 fn draw_line(start: Point, end: Point, color: u8) {
     println!(
@@ -28,9 +31,15 @@ fn draw_line(start: Point, end: Point, color: u8) {
     );
 }
 
+#[derive(Debug, StructOpt)]
+#[structopt(rename_all = "kebab-case")]
+struct Args {
+    file: PathBuf,
+}
+
 fn main() -> std::io::Result<()> {
-    let args: Vec<_> = std::env::args().collect();
-    let mut file = File::open(args[1].clone())?;
+    let args = Args::from_args();
+    let mut file = File::open(args.file)?;
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
 
