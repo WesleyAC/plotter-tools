@@ -7,3 +7,4 @@ license = "MIT"
 
 [dependencies]
 hpgl = { path = "../hpgl" }
+structopt = "0.3.14"
