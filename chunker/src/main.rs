@@ -33,10 +33,24 @@ struct Args {
     serial_device: Option<PathBuf>,
     #[structopt(short = "b", default_value = "60")]
     buffer_size: usize,
-    #[structopt(default_value = "9600")]
+    #[structopt(long = "baud", default_value = "9600")]
     baud_rate: u32,
-    #[structopt(default_value = "1000", help = "serial port timeout, in milliseconds")]
+    #[structopt(
+        long = "timeout",
+        default_value = "30000",
+        help = "serial port timeout, in milliseconds"
+    )]
     timeout: u64,
+}
+
+fn print_progress(percent: f64) {
+    let num_dots = (percent * 80.0) as usize;
+    println!(
+        "\x1B[F{:3}% [{}{}]",
+        (percent * 100.0) as usize,
+        "*".repeat(num_dots),
+        " ".repeat(80 - num_dots)
+    );
 }
 
 fn main() -> Result<(), Error> {
@@ -90,13 +104,13 @@ fn main() -> Result<(), Error> {
         Ok(mut port) => {
             port.write(b"IN;")?;
             let mut next_cmd = vec![];
-            for cmd in cmds.iter() {
+            for (i, cmd) in cmds.iter().enumerate() {
                 if next_cmd.len() + cmd.len() < args.buffer_size - 3 {
                     next_cmd.append(&mut cmd.clone());
                 } else {
                     port.write(&next_cmd)?;
-                    println!("{}", String::from_utf8(next_cmd.to_vec()).unwrap());
                     port.write(b"OA;")?;
+                    print_progress(i as f64 / cmds.len() as f64);
                     let mut c = 0;
                     while c != 13 {
                         let mut v = vec![0];
@@ -108,7 +122,7 @@ fn main() -> Result<(), Error> {
                 }
             }
             port.write(&next_cmd)?;
-            println!("{}", String::from_utf8(next_cmd.to_vec()).unwrap());
+            print_progress(1.0);
         }
         Err(e) => {
             println!("Error opening serial port {:#?}: {}", serial_device, e);
