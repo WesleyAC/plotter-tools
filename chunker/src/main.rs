@@ -53,29 +53,30 @@ fn main() -> Result<(), Error> {
 
     match serialport::open_with_settings(&args.serial_port_file, &s) {
         Ok(mut port) => {
-            port.write(b"IN;");
+            port.write(b"IN;")?;
             let mut next_cmd = vec![];
             for cmd in cmds.iter() {
                 if next_cmd.len() + cmd.len() < args.buffer_size {
                     next_cmd.append(&mut cmd.clone());
                 } else {
-                    port.write(&next_cmd);
+                    port.write(&next_cmd)?;
                     println!("{}", String::from_utf8(next_cmd.to_vec()).unwrap());
-                    port.write(b"OA;");
+                    port.write(b"OA;")?;
                     let mut c = 0;
                     while c != 13 {
                         let mut v = vec![0];
-                        port.read(v.as_mut_slice());
+                        port.read(v.as_mut_slice())?;
                         c = v[0];
                     }
-                    port.clear(ClearBuffer::All);
+                    port.clear(ClearBuffer::All)?;
                     next_cmd = cmd.to_vec();
                 }
             }
-            port.write(&next_cmd);
+            port.write(&next_cmd)?;
             println!("{}", String::from_utf8(next_cmd.to_vec()).unwrap());
         }
         Err(e) => {
+            println!("Error opening serial port {:#?}: {}", args.serial_port_file, e);
             ::std::process::exit(1);
         }
     };
