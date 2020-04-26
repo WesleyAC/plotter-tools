@@ -8,10 +8,12 @@ To use `chunker`:
 
 * Run `cargo build`
 * You many need to install `libudev-dev` or a similar package if it fails to build
-* Run `sudo ./target/debug/chunker /dev/ttyUSB0 ~/path/to/your/hpgl/file`
+* Run `sudo ./target/debug/chunker ~/path/to/your/hpgl/file`
 
 And your file should print!
 
-If you're using a Mac, install [this driver](http://www.prolific.com.tw/US/ShowProduct.aspx?p_id=229&pcid=41) and use `/dev/tty.usbserial` in the above command, instead of `/dev/ttyUSB0`.
+If you're using a Mac, install [this driver](http://www.prolific.com.tw/US/ShowProduct.aspx?p_id=229&pcid=41) and check that the file `/dev/tty.usbserial` exists when the serial cable is plugged in, in order to make sure it installed correctly.
+
+The program tries to automatically choose the serial device if only one of `/dev/ttyUSB*` and `/dev/tty.usbserial` exist, but you can also specify the serial device on the command line if you'd like.
 
 If you run into mysterious problems, try disconnecting and reconnecting the plotter before running the `chunker` command.

@@ -26,23 +26,58 @@ use structopt::StructOpt;
 #[derive(Debug, StructOpt)]
 #[structopt(rename_all = "kebab-case")]
 struct Args {
-    serial_port_file: PathBuf,
     hpgl_file: PathBuf,
-    #[structopt(short = "b", default_value = "57")]
+    #[structopt(
+        help = "serial device to use, such as /dev/ttyUSB0. attempts to autodetect by default."
+    )]
+    serial_device: Option<PathBuf>,
+    #[structopt(short = "b", default_value = "60")]
     buffer_size: usize,
+    #[structopt(default_value = "9600")]
+    baud_rate: u32,
+    #[structopt(default_value = "1000", help = "serial port timeout, in milliseconds")]
+    timeout: u64,
 }
 
 fn main() -> Result<(), Error> {
+    let args = Args::from_args();
+
+    let serial_device = args.serial_device.unwrap_or({
+        let devs: Vec<String> = std::fs::read_dir("/dev/")
+            .unwrap()
+            .filter_map(|e| {
+                let p = e.unwrap().path().to_str()?.to_string();
+                if p.starts_with("/dev/ttyUSB") || p.starts_with("/dev/tty.usbserial") {
+                    Some(p)
+                } else {
+                    None
+                }
+            })
+            .collect();
+        if devs.len() == 1 {
+            let dev = PathBuf::from(devs[0].clone());
+            println!("autodetected serial device: {:#?}", dev);
+            dev
+        } else if devs.len() == 0 {
+            println!("couldn't detect serial device! do you have the driver installed?");
+            ::std::process::exit(2);
+        } else {
+            println!(
+                "detected multiple serial devices: {:#?}, please specify only one!",
+                devs
+            );
+            ::std::process::exit(2);
+        }
+    });
+
     let s = SerialPortSettings {
-        baud_rate: 9600,
+        baud_rate: args.baud_rate,
         data_bits: DataBits::Eight,
         flow_control: FlowControl::None,
         parity: Parity::None,
         stop_bits: StopBits::One,
-        timeout: Duration::from_millis(1000),
+        timeout: Duration::from_millis(args.timeout),
     };
-
-    let args = Args::from_args();
 
     let input = File::open(args.hpgl_file)?;
     let buffered = BufReader::new(input);
@@ -51,12 +86,12 @@ fn main() -> Result<(), Error> {
         cmds.push(cmd?.as_bytes().to_vec());
     }
 
-    match serialport::open_with_settings(&args.serial_port_file, &s) {
+    match serialport::open_with_settings(&serial_device, &s) {
         Ok(mut port) => {
             port.write(b"IN;")?;
             let mut next_cmd = vec![];
             for cmd in cmds.iter() {
-                if next_cmd.len() + cmd.len() < args.buffer_size {
+                if next_cmd.len() + cmd.len() < args.buffer_size - 3 {
                     next_cmd.append(&mut cmd.clone());
                 } else {
                     port.write(&next_cmd)?;
@@ -76,7 +111,7 @@ fn main() -> Result<(), Error> {
             println!("{}", String::from_utf8(next_cmd.to_vec()).unwrap());
         }
         Err(e) => {
-            println!("Error opening serial port {:#?}: {}", args.serial_port_file, e);
+            println!("Error opening serial port {:#?}: {}", serial_device, e);
             ::std::process::exit(1);
         }
     };
