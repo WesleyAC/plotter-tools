@@ -36,9 +36,12 @@ fn plot_points(points: Vec<Point>, xscale: f64, yscale: f64) {
 }
 
 #[derive(Debug, StructOpt)]
-#[structopt(rename_all = "kebab-case")]
 struct Args {
     file: PathBuf,
+    #[structopt(long = "xscale", short = "x", default_value = "0.076")]
+    xscale: f64,
+    #[structopt(long = "yscale", short = "y", default_value = "0.076")]
+    yscale: f64,
 }
 
 fn main() -> std::io::Result<()> {
@@ -48,31 +51,27 @@ fn main() -> std::io::Result<()> {
     file.read_to_string(&mut contents)?;
     let cmds = parse_commands(contents).unwrap();
 
-    // scale of 0.076 is good for Recurse Center plotter -> NYCR plotter conversion
-    let xscale = 0.076;
-    let yscale = 0.076;
-
     for cmd in cmds {
         match cmd {
             Command::PenUp(points) => {
                 println!("G90");
                 println!("M107");
                 println!("G4 P100");
-                plot_points(points, xscale, yscale);
+                plot_points(points, args.xscale, args.yscale);
             }
             Command::PenDown(points) => {
                 println!("G90");
                 println!("M106");
                 println!("G4 P100");
-                plot_points(points, xscale, yscale);
+                plot_points(points, args.xscale, args.yscale);
             }
             Command::PlotAbsolute(points) => {
                 println!("G90");
-                plot_points(points, xscale, yscale);
+                plot_points(points, args.xscale, args.yscale);
             }
             Command::PlotRelative(points) => {
                 println!("G91");
-                plot_points(points, xscale, yscale);
+                plot_points(points, args.xscale, args.yscale);
             }
             Command::SelectPen(_) => {}
             Command::Initalize => {}
