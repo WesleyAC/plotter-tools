@@ -2,5 +2,7 @@ language: rust
 rust:
   - nightly
 cache: cargo
+before_install:
+  - sudo apt-get -y install libudev-dev
 script:
   - ./test.sh
