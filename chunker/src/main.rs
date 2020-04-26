@@ -48,7 +48,7 @@ fn print_progress(percent: f64) {
     println!(
         "\x1B[F{:3}% [{}{}]",
         (percent * 100.0) as usize,
-        "*".repeat(num_dots),
+        "♥".repeat(num_dots),
         " ".repeat(80 - num_dots)
     );
 }
@@ -100,6 +100,7 @@ fn main() -> Result<(), Error> {
         cmds.push(cmd?.as_bytes().to_vec());
     }
 
+    println!("");
     match serialport::open_with_settings(&serial_device, &s) {
         Ok(mut port) => {
             port.write(b"IN;")?;
