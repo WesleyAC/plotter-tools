@@ -3,6 +3,7 @@ name = "hpgl2gcode"
 version = "0.1.0"
 authors = ["Wesley Aptekar-Cassels <me@wesleyac.com>"]
 edition = "2018"
+license = "MIT"
 
 [dependencies]
 hpgl = { path = "../hpgl" }
