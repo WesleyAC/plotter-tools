@@ -1,4 +1,4 @@
-use rusttype::{self, Contour, Curve, FontCollection, Line, PositionedGlyph, Scale, Segment};
+use rusttype::{self, Contour, FontCollection, PositionedGlyph, Scale, Segment};
 use std::fs::File;
 use std::io::Read;
 

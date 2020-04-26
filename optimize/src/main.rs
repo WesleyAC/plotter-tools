@@ -1,5 +1,5 @@
 #![feature(or_patterns)]
-use hpgl::{parse_commands, Command, Point};
+use hpgl::{parse_commands, Command};
 
 // possible optimizations:
 // * remove duplicate PU and PD commands
