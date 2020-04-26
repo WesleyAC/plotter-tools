@@ -32,7 +32,7 @@ python3 -m http.server 8080
 Once I have a piece that I'm happy with, I'll plot it:
 
 ```bash
-sudo chunker /dev/ttyUSB0 <(./my_script.py)
+chunker <(./my_script.py)
 ```
 
 ## Getting Started

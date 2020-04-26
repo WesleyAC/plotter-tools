@@ -16,4 +16,6 @@ If you're using a Mac, install [this driver](http://www.prolific.com.tw/US/ShowP
 
 The program tries to automatically choose the serial device if only one of `/dev/ttyUSB*` and `/dev/tty.usbserial` exist, but you can also specify the serial device on the command line if you'd like.
 
+You'll probably need to be root or use `sudo` to access the serial port by default, but you should be able to add your user to the `dialout` group to fix this - `sudo usermod -a -G dialout $USER` should get you all set up :)
+
 If you run into mysterious problems, try disconnecting and reconnecting the plotter before running the `chunker` command.
