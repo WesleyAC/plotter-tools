@@ -1,9 +1,9 @@
 language: rust
 rust:
   - stable
-  - nightly
 cache: cargo
 before_install:
   - sudo apt-get -y install libudev-dev
+  - rustup install nightly
 script:
   - ./test.sh
