@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 set -e
 
 declare -A projects
@@ -9,12 +9,12 @@ projects[optimize]="nightly"
 projects[typewriter]="stable nightly"
 projects[viz]="stable nightly"
 
-for project in ${!projects[@]}
+for project in "${!projects[@]}"
 do
 	for rust_version in ${projects[$project]}
 	do
 		echo "testing $project on $rust_version..."
-		(cd $project && cargo +$rust_version build && cargo +$rust_version test)
+		(cd "$project" && cargo +"$rust_version" build && cargo +"$rust_version" test)
 	done
 done
 
