@@ -4,3 +4,5 @@ typewriter/target/
 hpgl2gcode/target/
 hpgl/target/
 optimize/target/
+osm2hpgl/target/
+osm2hpgl/*.osm

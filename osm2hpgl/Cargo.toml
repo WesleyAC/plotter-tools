@@ -1,0 +1,8 @@
+[package]
+name = "osm2hpgl"
+version = "0.1.0"
+authors = ["Wesley Aptekar-Cassels <me@wesleyac.com>"]
+edition = "2018"
+
+[dependencies]
+minidom = "0.12.0"
