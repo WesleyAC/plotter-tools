@@ -2,7 +2,7 @@
 
 `chunker` is used to communicate with the pen plotter.
 
-It gets around the plotters 60 byte buffer, by taking in a file of HP-GL commands, and sending each one to the plotter punctuated by a `OA` command, then waiting to send the next command to the plotter until a response has been received. This allows sending large files to the plotter without overflowing the internal buffer. The `chunker` command also prepends `IN;` to the entire file, initializing the plotter.
+It gets around the plotters 60 byte buffer, by taking in a file of HP-GL commands, and sending each one to the plotter punctuated by a `OA` command, then waiting to send the next command to the plotter until a response has been received. This allows sending large files to the plotter without overflowing the internal buffer.
 
 To use `chunker`:
 

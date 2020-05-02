@@ -103,7 +103,6 @@ fn main() -> Result<(), Error> {
     println!("");
     match serialport::open_with_settings(&serial_device, &s) {
         Ok(mut port) => {
-            port.write(b"IN;")?;
             let mut next_cmd = vec![];
             for (i, cmd) in cmds.iter().enumerate() {
                 if next_cmd.len() + cmd.len() < args.buffer_size - 3 {
