@@ -8,6 +8,7 @@ projects[hpgl2gcode]="stable nightly"
 projects[optimize]="nightly"
 projects[typewriter]="stable nightly"
 projects[viz]="stable nightly"
+projects[osm2hpgl]="nightly"
 
 for project in "${!projects[@]}"
 do
