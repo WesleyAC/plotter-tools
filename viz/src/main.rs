@@ -83,7 +83,7 @@ fn main() -> std::io::Result<()> {
             Command::SelectPen(c) => {
                 color = c;
             }
-            Command::Initalize => {}
+            Command::Initialize => {}
         }
     }
     println!("</svg></body></html>");

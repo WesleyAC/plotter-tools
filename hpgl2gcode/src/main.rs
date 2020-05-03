@@ -74,7 +74,7 @@ fn main() -> std::io::Result<()> {
                 plot_points(points, args.xscale, args.yscale);
             }
             Command::SelectPen(_) => {}
-            Command::Initalize => {}
+            Command::Initialize => {}
         }
     }
     Ok(())
