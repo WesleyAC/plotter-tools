@@ -17,7 +17,7 @@ viz <(./my_script.py) > /tmp/output.html
 I'll also typically use [`entr`](https://bitbucket.org/eradman/entr/src/default/) and [Live Reload](https://github.com/blaise-io/live-reload/) so that I can automatically run my script when I save it, and have my browser reload the output - that looks something like this:
 
 ```bash
-echo my_script.py | entr sh -c "viz <(./my_script.py) > /tmp/plotter-art/index.html"
+echo my_script.py | entr bash -c "viz <(./my_script.py) > /tmp/plotter-art/index.html"
 ```
 
 then in `/tmp/plotter-art`, run a web server in order for Live Reload to be able to work:
