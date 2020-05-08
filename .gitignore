@@ -6,3 +6,4 @@ hpgl/target/
 optimize/target/
 osm2hpgl/target/
 osm2hpgl/*.osm
+canonicalize/target/
