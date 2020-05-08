@@ -8,6 +8,8 @@ Some tools for interacting with pen plotters that use HPGL.
 * [`typewriter`](./typewriter/) - convert text to hpgl, using a given font.
 * [`hpgl2gcode`](./hpgl2gcode/) - convert a hpgl file to G-Code, for use with the [NYCR plotter](https://trmm.net/Plotter).
 
+The [plotters](./plotters/) directory has some documentation, notes, models for spare parts, and firmware dumps for various models of HP plotters.
+
 My typical workflow is to write a Python script that uses print statements to output HPGL code directly to standard out, then I'll do something like:
 
 ```bash
