@@ -4,6 +4,7 @@ rust:
 cache: cargo
 before_install:
   - sudo apt-get -y install libudev-dev
+  - sudo apt-get -y install openscad
   - rustup install nightly
 script:
   - ./test.sh
