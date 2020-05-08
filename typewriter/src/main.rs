@@ -1,10 +1,11 @@
 use rusttype::{self, Contour, FontCollection, PositionedGlyph, Scale, Segment};
 use std::fs::File;
 use std::io::Read;
+use std::path::PathBuf;
+use structopt::StructOpt;
 
 fn error(msg: &str) -> ! {
     eprintln!("{}", msg);
-    eprintln!("usage: typewriter <x> <y> <font size> \"my text here\" /path/to/font/file.otf");
     std::process::exit(1);
 }
 
@@ -65,26 +66,24 @@ fn countour_to_points(contour: Contour) -> Vec<Point> {
     dedup_res
 }
 
+#[derive(Debug, StructOpt)]
+#[structopt(name = "typewriter", about = "A program to convert text to HPGL.")]
+struct Args {
+    x: i64,
+    y: i64,
+    font_size: i64,
+    message: String,
+    #[structopt(parse(from_os_str))]
+    font_path: PathBuf,
+}
+
 fn main() {
-    let args: Vec<_> = std::env::args().collect();
-    if args.len() < 6 {
-        error("expected 5 arguments");
-    }
-    let x: i64 = args[1]
-        .parse()
-        .unwrap_or_else(|_| error("expected first arg to be int"));
-    let y: i64 = args[2]
-        .parse()
-        .unwrap_or_else(|_| error("expected second arg to be int"));
-    let font_size: i64 = args[3]
-        .parse()
-        .unwrap_or_else(|_| error("expected third arg to be int"));
-    let msg: &str = &args[4];
-    let path: &str = &args[5];
+    let args = Args::from_args();
 
     let mut font_data: Vec<u8> = Vec::new();
     {
-        let mut file = File::open(path).unwrap_or_else(|_| error("failed to open font file"));
+        let mut file =
+            File::open(args.font_path).unwrap_or_else(|_| error("failed to open font file"));
         file.read_to_end(&mut font_data)
             .unwrap_or_else(|_| error("failed to read font file"));
     }
@@ -103,11 +102,11 @@ fn main() {
 
     let glyphs: Vec<PositionedGlyph<'_>> = font
         .layout(
-            msg,
-            Scale::uniform(font_size as f32),
+            &args.message,
+            Scale::uniform(args.font_size as f32),
             rusttype::Point {
-                x: x as f32,
-                y: y as f32,
+                x: args.x as f32,
+                y: args.y as f32,
             },
         )
         .collect();

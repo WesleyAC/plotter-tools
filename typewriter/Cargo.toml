@@ -7,3 +7,4 @@ license = "MIT"
 
 [dependencies]
 rusttype = "0.8.0"
+structopt = "0.3.14"
