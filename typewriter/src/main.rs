@@ -75,6 +75,12 @@ struct Args {
     message: String,
     #[structopt(parse(from_os_str))]
     font_path: PathBuf,
+    #[structopt(
+        long,
+        default_value = "1",
+        help = "Makes plotting faster, but less accurate. Higher numbers are faster"
+    )]
+    rescale: i64,
 }
 
 fn main() {
@@ -116,9 +122,20 @@ fn main() {
             Some(v) => v,
         };
         for contour in contours {
-            let points = countour_to_points(contour);
+            let mut points = countour_to_points(contour);
             if points.len() == 0 {
                 continue;
+            }
+            if args.rescale != 1 {
+                let r = args.rescale;
+                points = points
+                    .iter()
+                    .map(|p| Point {
+                        x: ((p.x + r - 1) / r) * r,
+                        y: ((p.y + r - 1) / r) * r,
+                    })
+                    .collect();
+                points.dedup();
             }
             println!("PU;");
             println!("PA {}, {};", points[0].x, points[0].y);
