@@ -17,7 +17,7 @@ extern crate serialport;
 use std::fs::File;
 use std::io::{BufRead, BufReader, Error, Write};
 use std::path::PathBuf;
-use std::time::Duration;
+use std::time::{Instant, Duration};
 
 use serialport::prelude::*;
 
@@ -101,6 +101,7 @@ fn main() -> Result<(), Error> {
     }
 
     println!("");
+    let start_time = Instant::now();
     match serialport::open_with_settings(&serial_device, &s) {
         Ok(mut port) => {
             let mut next_cmd = vec![];
@@ -129,6 +130,9 @@ fn main() -> Result<(), Error> {
             ::std::process::exit(1);
         }
     };
+
+    // Inaccurate - should send OA for last command and block until done.
+    println!("{} seconds elapsed.", start_time.elapsed().as_secs());
 
     Ok(())
 }
