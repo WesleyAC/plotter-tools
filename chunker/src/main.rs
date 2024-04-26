@@ -14,10 +14,13 @@
 
 extern crate serialport;
 
+use regex::Regex;
+use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader, Error, Write};
 use std::path::PathBuf;
-use std::time::{Instant, Duration};
+use std::process::Command;
+use std::time::{Duration, Instant};
 
 use serialport::prelude::*;
 
@@ -57,17 +60,32 @@ fn main() -> Result<(), Error> {
     let args = Args::from_args();
 
     let serial_device = args.serial_device.unwrap_or({
-        let devs: Vec<String> = std::fs::read_dir("/dev/")
-            .unwrap()
-            .filter_map(|e| {
-                let p = e.unwrap().path().to_str()?.to_string();
-                if p.starts_with("/dev/ttyUSB") || p.starts_with("/dev/tty.usbserial") {
-                    Some(p)
-                } else {
-                    None
-                }
-            })
-            .collect();
+        let mut devs: Vec<String> = vec![];
+        if env::consts::OS == "windows" {
+            let output = Command::new("cmd")
+                .args(&["/C", "mode"])
+                .output()
+                .expect("mode command failed");
+            let output_string = std::str::from_utf8(&output.stdout).unwrap();
+            println!("{:?}", output_string);
+            let re = Regex::new(r"COM[0-9]").unwrap();
+            if let Some(re_match) = re.find(&output_string) {
+                devs = vec![re_match.as_str().to_owned()]
+            }
+        } else {
+            devs = std::fs::read_dir("/dev/")
+                .unwrap()
+                .filter_map(|e| {
+                    let p = e.unwrap().path().to_str()?.to_string();
+                    if p.starts_with("/dev/ttyUSB") || p.starts_with("/dev/tty.usbserial") {
+                        Some(p)
+                    } else {
+                        None
+                    }
+                })
+                .collect();
+        }
+
         if devs.len() == 1 {
             let dev = PathBuf::from(devs[0].clone());
             println!("autodetected serial device: {:#?}", dev);
